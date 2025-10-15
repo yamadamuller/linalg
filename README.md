@@ -1,4 +1,4 @@
-# MINimize_C
+# linalg
 A Linear Algebra Toolbox in C
 
 # Compile the code
