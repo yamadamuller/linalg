@@ -104,13 +104,13 @@ double inner(struct MatrixData A, struct MatrixData B){
         
         //Check if both inputs are vectors and not matrices
         if(!(A.m==1)&&!(A.n==1)){
-            printf("[linalg.inner] A must be a vector mx1 or 1xm! \n");
+            fprintf(stderr, "[linalg.inner] A must be a vector mx1 or 1xm! \n");
             vw = -1; //placeholder value for incomplete operation
             return vw;
         }
         else if(!(B.m==1)&&!(B.n==1))
         {
-            printf("[linalg.inner] B must be a vector mx1 or 1xm! \n");
+            fprintf(stderr, "[linalg.inner] B must be a vector mx1 or 1xm! \n");
             vw = -1; //placeholder value for incomplete operation
             return vw;
         }
@@ -129,7 +129,7 @@ double inner(struct MatrixData A, struct MatrixData B){
         }
     } 
     else{
-        printf("[linalg.inner] A and B must have the same dimensions! \n");
+        fprintf(stderr, "[linalg.inner] A and B must have the same dimensions! \n");
         vw = -1; //placeholder value for incomplete operation
         return vw;
     }
@@ -161,7 +161,7 @@ double** matsum(struct MatrixData A, struct MatrixData B){
         return C;
     } 
     else{
-        printf("[linalg.matsum] A and B must have the same dimensions! \n");
+        fprintf(stderr, "[linalg.matsum] A and B must have the same dimensions! \n");
         double** C = NULL;
         return C;
     }
@@ -192,7 +192,7 @@ double** matsub(struct MatrixData A, struct MatrixData B){
         return C;
     } 
     else{
-        printf("[linalg.matsub] A and B must have the same dimensions! \n");
+        fprintf(stderr, "[linalg.matsub] A and B must have the same dimensions! \n");
         double** C = NULL;
         return C;
     }
