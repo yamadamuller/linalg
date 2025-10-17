@@ -15,14 +15,14 @@ int main()
     printf("Number of columns of A: ");
     scanf("%d", &cols); 
     A = dinamic_array(A, rows, cols); //update the matrix given the dinamic array from runtime
-    struct MatrixData A_data = {A, rows, cols}; //matrix data struct
+    struct MatrixData A_data = {A, rows, cols, 0}; //matrix data struct
 
     printf("Number of rows of B: ");
     scanf("%d", &rows); 
     printf("Number of columns of B: ");
     scanf("%d", &cols); 
     B = dinamic_array(B, rows, cols); //update the matrix given the dinamic array from runtime
-    struct MatrixData B_data = {B, rows, cols}; //matrix data struct
+    struct MatrixData B_data = {B, rows, cols, 0}; //matrix data struct
 
     //Compute the vw = sum_{i}^{0, n-1} v_{i}.w_{i} 
     vw = inner(A_data, B_data);

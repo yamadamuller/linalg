@@ -17,11 +17,11 @@ int main()
     printf("Number of columns of A: ");
     scanf("%d", &cols); 
     A = dinamic_array(A, rows, cols); //update the matrix given the dinamic array from runtime
-    struct MatrixData A_data = {A, rows, cols}; //matrix data struct
+    struct MatrixData A_data = {A, rows, cols, 0}; //matrix data struct
 
     //Compute the sum B = c.A
     B = matcmul(A_data, c);
-    struct MatrixData B_data = {B, A_data.m, A_data.n}; //matrix data struct
+    struct MatrixData B_data = {B, A_data.m, A_data.n, 0}; //matrix data struct
     print(B_data); //print the dinamic array
     
     free_alloc_memory(A_data); //free allocated memory

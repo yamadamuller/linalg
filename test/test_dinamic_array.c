@@ -32,7 +32,7 @@ int main()
         printf("Number of columns of %c: ", ids[i]);
         scanf("%d", &cols); 
         ptrs[i] = dinamic_array(ptrs[i], rows, cols); //update the matrix given the dinamic array from runtime
-        struct MatrixData curr_A_data = {ptrs[i], rows, cols}; //matrix data struct
+        struct MatrixData curr_A_data = {ptrs[i], rows, cols, 0}; //matrix data struct
         print(curr_A_data); //print the dinamic array
         free_alloc_memory(curr_A_data); //free allocated memory
     }

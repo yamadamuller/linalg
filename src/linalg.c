@@ -135,6 +135,36 @@ double inner(struct MatrixData A, struct MatrixData B){
     }
 }
 
+double norm(struct MatrixData A){
+    /*
+        :param A: pointer to the first array/matrix in memory
+        :return ||A||
+    */
+
+    double v_norm; //variable that stores the norm output
+    
+    //check if the input array is indeed a vector
+    if(!(A.m==1)&&!(A.n==1)){
+            fprintf(stderr, "[linalg.norm] A must be a vector mx1 or 1xm! \n");
+            v_norm = -1; //placeholder value for incomplete operation
+            return v_norm;
+        }
+    else{
+        v_norm = 0;
+        double shape[2] = {(double) A.m, (double) A.n}; //array to help in detecting if the array is a row or column vector
+        int max_dim = argmax(shape, 2); //find which dimension will be iterated over
+        
+        //Compute the squared sum
+        for(int i=0; i<(int)shape[max_dim]; i++){
+            v_norm += pow(*(A.mtx[i]),2); 
+        }
+
+        v_norm = sqrt(v_norm); //||A|| = sqrt(A_{0}² + A_{1}² + ... + A_{n}²)
+
+        return v_norm;
+    }
+}
+
 double** matsum(struct MatrixData A, struct MatrixData B){
     /*
         :param A: pointer to the first array/matrix in memory
