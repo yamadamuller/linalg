@@ -6,6 +6,8 @@
 
 int main(){
     generate_header(); //generate header
-    struct RPNStack op_stack; //initialize the stack struct
-    compute_by_rpn(&op_stack); //run the toolbox
+    while(1){
+        struct RPNStack op_stack; //initialize the stack struct
+        compute_by_rpn(&op_stack); //run the toolbox
+    }
 }

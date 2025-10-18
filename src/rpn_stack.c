@@ -105,10 +105,11 @@ void compute_by_rpn(struct RPNStack *stack_struct){
     //Stack-based computation 
     extern char available_ops[NUM_RPNOPS]; //available operations
     int len_ops = sizeof(available_ops)/sizeof(available_ops[0]); //length of the operations array
-    char curr_char; //variable to monitor operation characters 
+    char curr_char, last_char; //variable to monitor operation characters 
     int rows, cols; //variables to store the shape of each incoming operand
     double cnt; //constant multiplication variable (special case)
     bool op_or_mtx; //variable to check if incoming char is operation or operand
+    bool repeated_flag = false; //flag to monitor if the arrays/matrices are repeated
     double **oprnd, **B, **C; //pre-defined pointers that will be assigned to matrices/arrays 
     for(int i=0; i<len_input; i++){
         curr_char = mtx_op[i]; //update the incoming character of the operation string
@@ -117,13 +118,21 @@ void compute_by_rpn(struct RPNStack *stack_struct){
             //incoming character is an operand
             //OBS: lower-case is interpreted as constants and upper-case as arrays/matrices
             if(isupper(curr_char)){
-                printf("Number of rows of %c: ", curr_char);
-                scanf("%d", &rows); 
-                printf("Number of columns of %c: ", curr_char);
-                scanf("%d", &cols);
-                oprnd = dinamic_array(oprnd, rows, cols); //update the matrix given the dinamic array from runtime 
-                struct MatrixData in_oprnd = {oprnd, rows, cols, 0}; //matrix data struct for the dinamic input
-                push(stack_struct, in_oprnd); //push the input matrix to the stack
+                if(curr_char!=last_char){
+                    printf("Number of rows of %c: ", curr_char);
+                    scanf("%d", &rows); 
+                    printf("Number of columns of %c: ", curr_char);
+                    scanf("%d", &cols);
+                    oprnd = dinamic_array(oprnd, rows, cols); //update the matrix given the dinamic array from runtime 
+                    struct MatrixData in_oprnd = {oprnd, rows, cols, 0}; //matrix data struct for the dinamic input
+                    push(stack_struct, in_oprnd); //push the input matrix to the stack
+                    last_char = curr_char; //commute variables to update last processed character
+                }
+                else{
+                    struct MatrixData in_oprnd = {oprnd, rows, cols, 0}; //same matrix data struct for the dinamic input
+                    push(stack_struct, in_oprnd); //push the last processed matrix to the stack again
+                    repeated_flag = true; //update the flag to handle memory operations
+                }
             }
             else{
                 printf("%c = ", curr_char);
@@ -134,18 +143,22 @@ void compute_by_rpn(struct RPNStack *stack_struct){
         }
         else{
             //incoming character is an operator
-            switch_operator(stack_struct, curr_char); 
+            switch_operator(stack_struct, curr_char, repeated_flag); 
         }
     }
 
     free(mtx_op); //free the memory space allocated to mtx_op
+    oprnd = NULL;
+    curr_char = '\0';
+    last_char = '\0';
     stack_struct = NULL; //point the struct to NULL
 }
 
-void switch_operator(struct RPNStack *stack_struct, char oprtr){
+void switch_operator(struct RPNStack *stack_struct, char oprtr, bool rep_flag){
     /*
         :param stack_struct: struct with the stack data (stack+top)
         :param oprtr: the character with the operator symbol
+        :param rep_flag: flag to monitor if the arrays/matrices are repeated
     */
 
     struct MatrixData left_oper, right_oper; //operand structs
@@ -176,7 +189,9 @@ void switch_operator(struct RPNStack *stack_struct, char oprtr){
             print(output); //print the output
 
             //free allocated memory
-            free_alloc_memory(left_oper);
+            if(!rep_flag){
+                free_alloc_memory(left_oper);
+            }
             free_alloc_memory(right_oper); 
             free_alloc_memory(output);
             break;
@@ -191,7 +206,9 @@ void switch_operator(struct RPNStack *stack_struct, char oprtr){
             print(output); //print the output
             
             //free allocated memory
-            free_alloc_memory(left_oper);
+            if(!rep_flag){
+                free_alloc_memory(left_oper);
+            }
             free_alloc_memory(right_oper); 
             free_alloc_memory(output);
             break;
@@ -205,7 +222,9 @@ void switch_operator(struct RPNStack *stack_struct, char oprtr){
             printf("%f \n", output); //print the output
 
             //free allocated memory
-            free_alloc_memory(left_oper);
+            if(!rep_flag){
+                free_alloc_memory(left_oper);
+            }
             free_alloc_memory(right_oper); 
             B = NULL; //update unused **B pointer
             C = NULL; //update unused **C pointer
@@ -221,10 +240,12 @@ void switch_operator(struct RPNStack *stack_struct, char oprtr){
             print(output); //print the output
             
             //free allocated memory
-            free_alloc_memory(left_oper);
+            if(!rep_flag){
+                free_alloc_memory(left_oper);
+            }
             free_alloc_memory(right_oper); 
             free_alloc_memory(output);
-            break;    
+            break;
         }
 
         //norm = sqrt(A_{0}² + A_{1}² + ... + A_{n}²)

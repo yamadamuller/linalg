@@ -16,6 +16,6 @@ struct MatrixData pop(struct RPNStack *stack_struct); //function that pops from 
 bool isempty(struct RPNStack *stack_struct); //function to check if the stack is empty or not
 bool isin_sorted(char target, char A[], int len); //function that checks if a char exist in the available ops array (sorted)
 void compute_by_rpn(struct RPNStack *stack_struct); //function that triggers the linalg operation
-void switch_operator(struct RPNStack *stack_struct, char oprtr); //switch logic to define with operation will be computed
+void switch_operator(struct RPNStack *stack_struct, char oprtr, bool rep_flag); //switch logic to define with operation will be computed
 
 #endif
