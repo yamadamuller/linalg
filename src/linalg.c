@@ -251,3 +251,57 @@ double** matcmul(struct MatrixData A, double c){
 
     return B;
 }
+
+double linear_comb(double** A, double** B, int i, int j, int len){
+    /*
+        :param A: pointer to the first array/matrix in memory
+        :param B: pointer to the second array/matrix in memory
+        :param i: index of the rows
+        :param j: index of the columns
+        :param len: length of the arrays
+        :return linear combination between vector a and b 
+    */
+    if(!(A==NULL)&&!(B==NULL)){
+        double l_comb = 0; //linear combination output
+        for(int e=0; e<len; e++){
+            l_comb += *(&A[i][e]) * *(&B[e][j]); //sum_{e=0}^{len-1} a_{i,e}*b_{e,j} 
+        }
+
+        return l_comb;
+    }
+    else{
+        fprintf(stderr, "[linalg.linear_comb] At least one array is a NULL pointer! \n");
+        return (double) 0;
+    }
+}
+
+double** matmul(struct MatrixData A, struct MatrixData B){
+    /*
+        :param A: pointer to the first array/matrix in memory
+        :param B: pointer to the second array/matrix in memory
+        :return C=A@B
+    */
+    
+    //Check if the operation is possible given the shapes of A and B
+    if (!(A.n==B.m)){
+        fprintf(stderr, "[linalg.matmul] Shape mismatch between A and B! \n");
+        return NULL;
+    }
+    else{
+        //Allocate memory for the dinamic output array/matrix
+        double** C; //output array/matrix
+        C = (double**) malloc(A.m * sizeof *C); //row-based allocation (size of a double array)
+        for(int i=0; i<A.m; i++){
+            C[i] = (double*) malloc(B.n * sizeof *C); //column based allocation 
+        }
+
+        //Compute the multiplication
+        for(int i=0; i<A.m; i++){
+            for(int j=0; j<B.n; j++){
+                C[i][j] = linear_comb(A.mtx, B.mtx, i, j, A.m); //(AB)_{ij} = A[i0:in] * A[0j:nj] 
+            }
+        }
+
+        return C;
+    }
+}

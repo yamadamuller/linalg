@@ -20,5 +20,7 @@ double norm(struct MatrixData A); //function to compute the norm of a vector
 double** matsum(struct MatrixData A, struct MatrixData B); //function to sum two matrices
 double** matsub(struct MatrixData A, struct MatrixData B); //function to subtract two matrices
 double** matcmul(struct MatrixData A, double c); //function to multiply a matrix by a constant
+double linear_comb(double* a[], double* b[], int len); 
+double** matmul(struct MatrixData A, struct MatrixData B); //function to multiply an array/matrix by another array/matrix
 
 #endif

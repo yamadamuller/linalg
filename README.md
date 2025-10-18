@@ -33,7 +33,7 @@ The toolbox is designed to run in the terminal. Upon executing the compiled file
 
 Then, type a matrix operation you would like to compute. The toolbox implements a stack-based routine, more specifically, the RPN notation. 
 
-Then, type a matrix operation you would like to compute. The toolbox implements a stack-based routine, more specifically, the RPN notation. Therefore, the sum of two matrices "A+B" should be defined as "AB+". The available operations are as follows:
+Then, type a matrix operation you would like to compute. The toolbox implements a stack-based routine, more specifically, the RPN notation. For example, the sum of two matrices "A+B" should be defined as "AB+". The available operations are as follows:
 
 - '*' : multiplication of a matrix by a constant;
 - '+' : sum of two matrices;

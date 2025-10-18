@@ -212,6 +212,21 @@ void switch_operator(struct RPNStack *stack_struct, char oprtr){
             break;
         }
 
+        //C=A@B
+        case('@'):{
+            right_oper = pop(stack_struct); //the matrix B
+            left_oper = pop(stack_struct); //the matrix A
+            C = matmul(left_oper, right_oper); //compute the multiplication of two matrices
+            struct MatrixData output = {C, left_oper.m, right_oper.n, 0}; //output matrix data struct
+            print(output); //print the output
+            
+            //free allocated memory
+            free_alloc_memory(left_oper);
+            free_alloc_memory(right_oper); 
+            free_alloc_memory(output);
+            break;    
+        }
+
         //norm = sqrt(A_{0}² + A_{1}² + ... + A_{n}²)
         case('|'): {
             left_oper = pop(stack_struct); //the vector A
