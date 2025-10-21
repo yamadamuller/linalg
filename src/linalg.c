@@ -296,9 +296,19 @@ double** matmul(struct MatrixData A, struct MatrixData B){
         }
 
         //Compute the multiplication
-        for(int i=0; i<A.m; i++){
-            for(int j=0; j<B.n; j++){
-                C[i][j] = linear_comb(A.mtx, B.mtx, i, j, A.m); //(AB)_{ij} = A[i0:in] * A[0j:nj] 
+        if((A.n!=1)&&(B.m!=1)){
+            for(int i=0; i<A.m; i++){
+                for(int j=0; j<B.n; j++){
+                    C[i][j] = linear_comb(A.mtx, B.mtx, i, j, A.m); //(AB)_{ij} = A[i0:in] * A[0j:nj] 
+                }
+            }
+        }
+        //Account for nx1 @ 1xn special case where two vectors result in a nxn matrix
+        else{ 
+            for(int i=0; i<A.m; i++){
+                for(int j=0; j<B.n; j++){
+                    C[i][j] = *(&A.mtx[i][0]) * *(&B.mtx[0][j]); //(AB)_{ij} = A[i0:in] * A[0j:nj] 
+                }
             }
         }
 
