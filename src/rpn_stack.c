@@ -248,6 +248,20 @@ void switch_operator(struct RPNStack *stack_struct, char oprtr, bool rep_flag){
             break;
         }
 
+        //(aT)ij = (a)ji
+        case('T'): {
+            left_oper = pop(stack_struct); //the vector A
+            B = transpose(left_oper); //compute the transpose of the array
+            struct MatrixData output = {B, left_oper.n, left_oper.m, 0}; //output array data struct
+            print(output); //print the output
+
+            //free allocated memory
+            free_alloc_memory(left_oper);
+            free_alloc_memory(output);
+            C = NULL;
+            break;
+        }
+
         //norm = sqrt(A_{0}² + A_{1}² + ... + A_{n}²)
         case('|'): {
             left_oper = pop(stack_struct); //the vector A

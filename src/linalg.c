@@ -33,7 +33,7 @@ double** dinamic_array(double** A, int m, int n){
 
 void print(struct MatrixData A){
     /*
-        :param A: array/matrix struct in memory
+        :param A: array/matrix A struct in memory
     */
 
     printf("[ \n"); //add brackets 
@@ -59,7 +59,7 @@ void print(struct MatrixData A){
 
 void free_alloc_memory(struct MatrixData A){
     /*
-        :param A: array/matrix struct in memory
+        :param A: array/matrix A struct in memory
         :param m: number of rows
     */
 
@@ -92,8 +92,8 @@ int argmax(double A[], int len){
 
 double inner(struct MatrixData A, struct MatrixData B){
     /*
-        :param A: pointer to the first array/matrix in memory
-        :param B: pointer to the second array/matrix in memory
+        :param A: array/matrix A struct in memory
+        :param B: array/matrix B struct in memory
         :return A.B
     */
 
@@ -137,7 +137,7 @@ double inner(struct MatrixData A, struct MatrixData B){
 
 double norm(struct MatrixData A){
     /*
-        :param A: pointer to the first array/matrix in memory
+        :param A: array/matrix A struct in memory
         :return ||A||
     */
 
@@ -148,7 +148,7 @@ double norm(struct MatrixData A){
             fprintf(stderr, "[linalg.norm] A must be a vector mx1 or 1xm! \n");
             v_norm = -1; //placeholder value for incomplete operation
             return v_norm;
-        }
+    }
     else{
         v_norm = 0;
         double shape[2] = {(double) A.m, (double) A.n}; //array to help in detecting if the array is a row or column vector
@@ -167,8 +167,8 @@ double norm(struct MatrixData A){
 
 double** matsum(struct MatrixData A, struct MatrixData B){
     /*
-        :param A: pointer to the first array/matrix in memory
-        :param B: pointer to the second array/matrix in memory
+        :param A: array/matrix A struct in memory
+        :param B: array/matrix B struct in memory
         :return C=A+B
     */
 
@@ -199,8 +199,8 @@ double** matsum(struct MatrixData A, struct MatrixData B){
 
 double** matsub(struct MatrixData A, struct MatrixData B){
     /*
-        :param A: pointer to the first array/matrix in memory
-        :param B: pointer to the second array/matrix in memory
+        :param A: array/matrix A struct in memory
+        :param B: array/matrix B struct in memory
         :return C=A-B
     */
 
@@ -230,7 +230,7 @@ double** matsub(struct MatrixData A, struct MatrixData B){
 
 double** matcmul(struct MatrixData A, double c){
     /*
-    :param A: pointer to the first array/matrix in memory
+    :param A: array/matrix A struct in memory
     :param c: the constant that will multiply every element of the array/matrix
     :return B = c.A
     */
@@ -277,8 +277,8 @@ double linear_comb(double** A, double** B, int i, int j, int len){
 
 double** matmul(struct MatrixData A, struct MatrixData B){
     /*
-        :param A: pointer to the first array/matrix in memory
-        :param B: pointer to the second array/matrix in memory
+        :param A: array/matrix A struct in memory
+        :param B: array/matrix B struct in memory
         :return C=A@B
     */
     
@@ -303,6 +303,7 @@ double** matmul(struct MatrixData A, struct MatrixData B){
                 }
             }
         }
+
         //Account for nx1 @ 1xn special case where two vectors result in a nxn matrix
         else{ 
             for(int i=0; i<A.m; i++){
@@ -314,4 +315,104 @@ double** matmul(struct MatrixData A, struct MatrixData B){
 
         return C;
     }
+}
+
+double** zeros(int m, int n){
+    /*
+        :param m: number of rows of the array/matrix filled with zeros
+        :param n: number of columns of the array/matrix filled with zeros
+        :return A mxn array filled with zeros
+    */
+
+    double** Z; //initialize the output pointer
+    Z = (double**) malloc(m * sizeof *Z); //row-based allocation (size of a double array)
+    for(int i=0; i<m; i++){
+        Z[i] = (double*) calloc(n, sizeof *Z); //column based allocation elements filled with 0's
+    }
+
+    return Z;
+}
+
+struct MatrixData *sqr_lu(struct MatrixData A, double tol){
+    /*
+        :param A: array/matrix A struct in memory
+        :param tol: tolerance of the algorithm
+        :return an array with the MatrixData structs of both L (output[0]) and U (output[1])
+    */
+
+    if(A.m!=A.n){
+        fprintf(stderr, "[linalg.sqr_lu] Input matrix A is not a square matrix! \n");
+        return NULL;
+    }
+    else{
+        //Allocate memory for the both L and U matrices and initialize them filled with zero
+        double **L = zeros(A.m, A.n); //matrix filled with zeros sized mxn
+        double **U = zeros(A.m, A.n); //matrix filled with zeros sized mxn        
+        
+        //square LU factorization algorithm
+        for(int k=0; k<A.n; k++){
+            if(*(&A.mtx[k][k])<tol){
+                break; //cannot proceed factorization without a row exchange
+            }
+
+            //Handle L matrix first
+            L[k][k] = 1; //L is a lower traingular matrix with 1's in the main diagonal
+            for(int i=k+1; i<A.n; i++){
+                L[i][k] = *(&A.mtx[i][k]) / *(&A.mtx[k][k]); //multipliers of column k
+                for(int j=k+1; j<A.n; j++){
+                    A.mtx[i][j] -= *(&L[i][k]) * *(&A.mtx[k][j]); //Elimination at (i,j) based on L(i,k) -> set A[i][j] to 0!
+                } 
+            }    
+
+            //Update the pivots once the elimination is computed for each k row
+            for(int l=k; l<A.n; l++){
+                U[k][l] = *(&A.mtx[k][l]);
+            }
+        }
+
+        //Generate MatrixData for both L and U
+        struct MatrixData L_data = {L, A.m, A.n, 0};
+        struct MatrixData U_data = {U, A.m, A.n, 0};
+        struct MatrixData *lu_out = (struct MatrixData*) malloc(2 * sizeof(L_data)); //allocate the memory space for the output array
+        lu_out[0] = L_data; //store the L matrix in the first element
+        lu_out[1] = U_data; //store the U matrix in the second element
+        
+        return lu_out;
+    }
+}
+
+double** transpose(struct MatrixData A){
+    /*
+        :param A: array/matrix A struct in memory
+        :return A transpose 
+    */
+
+    //Allocate memory for the dinamic output array/matrix
+    double** A_t; //output array/matrix
+    //A -> mxn / A' -> nxm
+    A_t = (double**) malloc(A.n * sizeof *A_t); //row-based allocation (size of a double array)
+    for(int i=0; i<A.n; i++){
+        A_t[i] = (double*) malloc(A.m * sizeof *A_t); //column based allocation 
+    }
+
+    //Compute a'(i,j) = a(j,i)
+    if(A.m==1){
+        for(int i=0; i<A.n; i++){
+            A_t[i][0] = *(&A.mtx[0][i]);
+        }
+    }
+    else if(A.n==1){
+        for(int i=0; i<A.m; i++){
+            A_t[0][i] = *(&A.mtx[i][0]);
+        }
+    }
+    else{
+        for(int i=0; i<A.n; i++){
+            for(int j=0; j<A.m; j++){
+                A_t[i][j] = *(&A.mtx[j][i]);
+            }
+        }
+    }
+
+    return A_t;
 }

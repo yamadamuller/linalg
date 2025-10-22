@@ -25,8 +25,8 @@ Lastly, run the executable file:
 ./<executable_name>
 ```
 
-# Terminal
-The toolbox is designed to run in the terminal. Upon executing the compiled file, you'll be greated by the linalg "UI"
+# Runtime operations
+The toolbox is designed to run in the terminal. Upon executing the compiled file, you'll be greated by the linalg's "pseudo-UI":
 
 <img width="1166" height="394" alt="Screenshot from 2025-10-17 00-39-09" src="https://github.com/user-attachments/assets/5f431f9d-b785-4aa4-bcbe-ff3a04506630" />
 

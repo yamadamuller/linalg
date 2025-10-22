@@ -20,7 +20,10 @@ double norm(struct MatrixData A); //function to compute the norm of a vector
 double** matsum(struct MatrixData A, struct MatrixData B); //function to sum two matrices
 double** matsub(struct MatrixData A, struct MatrixData B); //function to subtract two matrices
 double** matcmul(struct MatrixData A, double c); //function to multiply a matrix by a constant
-double linear_comb(double* a[], double* b[], int len); 
+double linear_comb(double** A, double** B, int i, int j, int len); 
 double** matmul(struct MatrixData A, struct MatrixData B); //function to multiply an array/matrix by another array/matrix
+double** zeros(int m, int n); //function to generate an mxn array filled with zeros
+struct MatrixData *sqr_lu(struct MatrixData A, double tol); //square LU factorization with no row exchange
+double** transpose(struct MatrixData A); //function to compute the transpose of a matrix
 
 #endif
