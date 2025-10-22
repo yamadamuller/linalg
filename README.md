@@ -28,7 +28,7 @@ Lastly, run the executable file:
 # Runtime operations
 The toolbox is designed to run in the terminal. Upon executing the compiled file, you'll be greated by the linalg's "pseudo-UI":
 
-[Screencast from 21-10-2025 23:34:18.webm](https://github.com/user-attachments/assets/773ba1c3-8282-45a1-9e6b-a041289c162d)
+![linalg_ui](https://github.com/user-attachments/assets/aba161df-fb88-46c8-a4e9-45c3824fb906)
 
 Then, type a matrix operation you would like to compute. The toolbox implements a stack-based routine, more specifically, the RPN notation. 
 
